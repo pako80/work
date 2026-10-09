@@ -26,4 +26,7 @@ Introduction, Impact, Key stages, Solution (a gallery of up to six phone screens
 - Impact values count up when they start with a number ("38%", "2.4x", "120k").
 - Set `draft: false` when a study is ready (the flag is kept for tracking; no badge is shown).
 
-Deploying as an SPA: route all paths to `index.html` (Vercel/Netlify do this with a rewrite rule).
+## Deploying
+
+1. Push to GitHub, then import the repo in Vercel. It detects Vite: build command `npm run build`, output `dist`.
+2. `vercel.json` rewrites every path to `index.html`, so links like `/work/kto-jackpots` work on refresh. On Netlify, add the same rule in `_redirects`.

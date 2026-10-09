@@ -45,11 +45,14 @@ export function Home() {
 function Hero() {
   const reduce = useReducedMotion();
   // One phone at a time, advancing on its own. The list marks which project is on screen.
-  const [current, setCurrent] = useState(0);
+  const [slide, setSlide] = useState(0);
+  // Each project can show more than one phone, so the hero steps through slides and the list follows the project.
+  const slides = caseStudies.flatMap((study, project) => (study.heroShots ?? [thumbnailOf(study)]).map((image) => ({ project, image })));
+  const current = slides[slide].project;
 
   useEffect(() => {
     if (reduce) return;
-    const id = setInterval(() => setCurrent((c) => (c + 1) % caseStudies.length), 4800);
+    const id = setInterval(() => setSlide((n) => (n + 1) % slides.length), 4800);
     return () => clearInterval(id);
   }, [reduce]);
 
@@ -60,7 +63,10 @@ function Hero() {
           text="From idea to product"
           className="max-w-[11ch] text-6xl font-medium leading-[0.92] tracking-[-0.035em] md:text-8xl"
         />
-        <ul className="mt-8 flex flex-col gap-1 md:mt-10" aria-label="Case studies">
+        <p className="mt-6 max-w-[34ch] text-balance text-lg leading-relaxed text-muted md:text-xl">
+          Products and brand experiences I’ve led from vision to execution.
+        </p>
+        <ul className="mt-6 flex flex-col gap-1 md:mt-8" aria-label="Case studies">
           {caseStudies.map((study, i) => (
             <motion.li
               key={study.slug}
@@ -112,8 +118,8 @@ function Hero() {
       <div aria-hidden className="relative mx-auto h-[78dvh] w-full max-w-[640px] [clip-path:inset(-240px_-240px_0_-240px)] lg:h-[100dvh] lg:-my-24">
         <AnimatePresence initial>
           <motion.img
-            key={current}
-            src={thumbnailOf(caseStudies[current]).src}
+            key={slide}
+            src={slides[slide].image.src}
             alt=""
             width={936}
             height={1836}

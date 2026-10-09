@@ -96,6 +96,8 @@ export interface CaseStudy {
   years: string;
   /** The phone shown on this project's cards, in the hero and the carousels. */
   thumbnail: Image;
+  /** Phones the home page hero cycles through for this project. Defaults to just the thumbnail. */
+  heroShots?: Image[];
   introduction: string[];
   impact: { lead: string; metrics: Metric[] };
   stages: Stage[];
@@ -144,6 +146,18 @@ const casinoVisuals: Image = { src: "/work/mockups/casino-visuals.png", alt: "KT
 const casinoNavigationGames: Image = { src: "/work/mockups/casino-navigation-games.png", alt: "Game cards in the native casino: Piggy Gold, Fortune Dragon and Fortune Tiger" };
 const casinoFiltering: Image = { src: "/work/mockups/casino-filtering.png", alt: "Game filtering in the native casino" };
 const casinoDepositPhone: Image = { src: "/work/mockups/casino-deposit.png", alt: "KTO native casino in-game Deposit sheet over Ganesha Gold with quick amounts" };
+const jackpotComponent: Image = { src: "/work/mockups/jackpot-component.png", alt: "KTO Jackpot component with the Mega, Major, Minor and Mini jackpot amounts and an opt-in switch" };
+// The jackpot tiers, drawn as an SVG for the third Jackpot step.
+const jackpotTiers: Screen = {
+  src: "/work/components/jackpots-tiers.svg",
+  alt: "The jackpot tiers component",
+  width: 393,
+  height: 314,
+};
+const jackpotInGame: Image = { src: "/work/mockups/jackpot-in-game.png", alt: "KTO Jackpot inside Fortune Tiger, with the Mega jackpot amount and opt-in switch below the game" };
+const jackpotContribution: Image = { src: "/work/mockups/jackpot-contribution.png", alt: "KTO Jackpot Pick contribution sheet over Fortune Tiger, with five contribution levels" };
+const jackpotWheel: Image = { src: "/work/mockups/jackpot-wheel.png", alt: "KTO Jackpot prize wheel with the Mega, Major, Minor and Mini amounts" };
+const jackpotSplash: Image = { src: "/work/mockups/jackpot-splash.png", alt: "KTO Jackpot launch screen with the jackpot amounts and the line Hotter wins. Every spin." };
 const casinoHome: Image = { src: "/work/mockups/casino-home.png", alt: "KTO casino home screen with the Icescape promotion, game categories, Continue Playing and Best Games" };
 const jackpotsHome: Image = { src: "/work/mockups/jackpots-home.png", alt: "KTO Jackpot screen with the Mega, Major, Minor and Mini prizes above the prize wheel" };
 const trunfoHome: Image = { src: "/work/mockups/trunfo-home.png", alt: "KTO Trunfo opt-in screen: draw a card daily, collect cards and claim rewards" };
@@ -513,9 +527,46 @@ export const caseStudies: CaseStudy[] = [
     title: "KTO Jackpot",
     ...kto,
     ...draftContent(),
-    description: "A side-bet jackpot product for casino slots, built on PrizeFlex APIs. The experience gives customers an additional chance to win progressive jackpot rewards while playing their favourite games.",
+    description: "An agnostic Jackpot Product designed and built for the Brazilian market on the PrizeFlex APIs.",
     thumbnail: jackpotsHome,
-    comingSoon: true,
+    heroShots: [jackpotsHome, jackpotSplash],
+    stages: [
+      {
+        name: "Discover & Define",
+        summary: "Discover & Define",
+        body: "We worked on some early prototypes to discover ways how we can:",
+        points: ["Integrate multi-tier jackpots in the lobby", "Integrate the jackpot experience in the game", "Design an intuitive opt-in flow", "Create animated win sequences for each tier"],
+        shots: [jackpotsHome],
+        crop: true,
+      },
+      {
+        name: "Integrate multi-tier jackpots in the lobby",
+        summary: "Integrate multi-tier jackpots in the lobby",
+        body: "Building on the PrizeFlex APIs we designed a component that displays the multi-tiered Jackpot amounts as well as allow the customer to opt in.",
+        image: jackpotComponent,
+        imageWidth: 61.6,
+        shots: [],
+      },
+      {
+        name: "Integrate the jackpot experience in the game",
+        summary: "Integrate the jackpot experience in the game",
+        body: "An opt-in flow which does not disrupt the game experience.",
+        image: jackpotInGame,
+        imageWidth: 80,
+        imageBottom: true,
+        shots: [],
+        illustration: jackpotTiers,
+      },
+    ],
+    introduction: [
+      "Agnostic Jackpots are a relatively new concept in the Brazilian market, so we needed to find intuitive ways to integrate them into the casino experience.",
+      "We defined multiple entry points to help customers discover and engage with the product, while keeping the core gameplay seamless and uninterrupted.",
+    ],
+    years: "2026",
+    links: [{ label: "In-Game Jackpot Prototype", url: "https://jackpotwin.vercel.app/" }],
+    outcomeScreens: [jackpotContribution, jackpotWheel, jackpotSplash],
+    learnings: [],
+    impact: { lead: "", metrics: [] },
   },
   {
     slug: "kto-trunfo",

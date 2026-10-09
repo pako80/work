@@ -110,6 +110,9 @@ export function CaseStudySheet({ slug }: { slug: string }) {
   );
 }
 
+/** A project with no headline and no metrics has no Impact section. */
+const hasImpact = (study: CaseStudy) => !!study.impact.lead || study.impact.metrics.length > 0;
+
 function StudyContent({ study }: { study: CaseStudy }) {
   const scroller = useScrollContainer();
   // Each study starts from its top, including when arriving from "Next case study".
@@ -121,7 +124,7 @@ function StudyContent({ study }: { study: CaseStudy }) {
     <>
       <main id="case-main">
         <Intro study={study} />
-        <Impact study={study} />
+        {hasImpact(study) && <Impact study={study} />}
         <Stages stages={study.stages} />
         <Outcomes screens={study.outcomeScreens} />
         {study.learnings.length > 0 && <Learnings learnings={study.learnings} />}
@@ -197,7 +200,7 @@ function Intro({ study }: { study: CaseStudy }) {
         />
       </header>
 
-      <SectionNav hasLinks={!!study.links?.length} hasLearnings={study.learnings.length > 0} />
+      <SectionNav hasImpact={hasImpact(study)} hasLinks={!!study.links?.length} hasLearnings={study.learnings.length > 0} />
 
       <Section id="introduction" title="Introduction" className="pt-24 md:pt-40">
         <div className="grid gap-12 xl:grid-cols-[minmax(0,1fr)_260px] xl:gap-16">
@@ -597,8 +600,10 @@ function CloseButton({ onClose }: { onClose: () => void }) {
 
 /* ---------------------------------------------------------------- Section navigator */
 
-function SectionNav({ hasLinks, hasLearnings }: { hasLinks: boolean; hasLearnings: boolean }) {
-  const items = sections.filter((s) => (s.id !== "links" || hasLinks) && (s.id !== "learnings" || hasLearnings));
+function SectionNav({ hasImpact, hasLinks, hasLearnings }: { hasImpact: boolean; hasLinks: boolean; hasLearnings: boolean }) {
+  const items = sections.filter(
+    (s) => (s.id !== "impact" || hasImpact) && (s.id !== "links" || hasLinks) && (s.id !== "learnings" || hasLearnings),
+  );
   const [active, setActive] = useState<string>("introduction");
   const reduce = useReducedMotion();
 
