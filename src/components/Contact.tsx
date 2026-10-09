@@ -48,11 +48,6 @@ export function Contact() {
               LinkedIn
             </a>
           </li>
-          <li>
-            <a className="hover:text-fg" href="https://www.marioborg.com" target="_blank" rel="noopener noreferrer">
-              Profile
-            </a>
-          </li>
         </ul>
       </div>
     </footer>
