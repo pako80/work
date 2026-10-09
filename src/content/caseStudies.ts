@@ -672,7 +672,7 @@ export const caseStudies: CaseStudy[] = [
     linksTitle: "Links",
     links: [{ label: "Marketing Landing Page", url: "https://trunfo-chi.vercel.app" }],
     thumbnail: trunfoHome,
-    heroShots: [trunfoHome, { ...trunfoHome, cardFlip: true }],
+    heroShots: [{ ...trunfoHome, cardFlip: true }, trunfoHome],
   },
 ];
 
