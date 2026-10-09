@@ -79,16 +79,19 @@ export function CaseStudyRail({
         className="rail mt-12 flex snap-x snap-mandatory gap-[26px] overflow-x-auto pb-2 focus-visible:outline-offset-[-2px] md:mt-16 md:gap-[34px]"
       >
         {studies.map((study, i) => (
-          <motion.li
-            key={study.slug}
-            className="w-[73vw] shrink-0 snap-start sm:w-[357px] lg:w-[374px]"
-            initial={reduce ? false : { opacity: 0, x: 40 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, amount: 0.3 }}
-            transition={{ duration: 0.9, ease: easeOut, delay: i * 0.08 }}
-          >
-            <WorkCard study={study} />
-          </motion.li>
+          // The card slides in inside its list item. Moving the item itself shifts its scroll-snap position,
+          // which made the rail jump sideways and back when the cards appeared.
+          <li key={study.slug} className="w-[73vw] shrink-0 snap-start sm:w-[357px] lg:w-[374px]">
+            <motion.div
+              className="h-full"
+              initial={reduce ? false : { opacity: 0, x: 40 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ duration: 0.9, ease: easeOut, delay: i * 0.08 }}
+            >
+              <WorkCard study={study} />
+            </motion.div>
+          </li>
         ))}
       </ul>
     </section>

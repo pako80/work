@@ -49,10 +49,10 @@ export function Header() {
             aria-hidden
             className="mark block h-[46px] w-[41px] bg-fg"
           />
-          {/* Name stays hidden until the mark is hovered or focused. */}
+          {/* Name stays hidden until the mark is hovered or focused. It only fades, so it never shifts position. */}
           <span
             aria-hidden
-            className="hidden -translate-x-2 text-[15px] font-medium opacity-0 transition-[opacity,transform] duration-500 ease-[var(--ease-out)] group-hover:translate-x-0 group-hover:opacity-100 group-focus-visible:translate-x-0 group-focus-visible:opacity-100 sm:inline-block"
+            className="hidden text-[15px] font-medium opacity-0 transition-opacity duration-500 ease-[var(--ease-out)] group-hover:opacity-100 group-focus-visible:opacity-100 sm:inline-block"
           >
             Mario Borg
           </span>

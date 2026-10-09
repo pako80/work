@@ -186,3 +186,77 @@ html {
     -webkit-backdrop-filter: none;
   }
 }
+
+
+/* Trunfo card: floats, flips once, then glints. Played when its Key stage comes into view. */
+.trunfo-card { position: relative; aspect-ratio: 0.65; }
+.trunfo-card__float {
+  position: absolute; inset: 0;
+  animation: tcFloat 4.2s ease-in-out infinite;
+  filter: drop-shadow(0 32px 60px rgba(218, 0, 0, 0.35)) drop-shadow(0 12px 24px rgba(0, 0, 0, 0.6));
+}
+.trunfo-card__flip {
+  position: absolute; inset: 0; transform-style: preserve-3d;
+  animation: tcFlip 2.2s cubic-bezier(0.45, 0.05, 0.25, 1) 0.5s both;
+}
+.trunfo-card__flip img {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain;
+  backface-visibility: hidden; -webkit-backface-visibility: hidden; pointer-events: none; user-select: none;
+}
+.trunfo-card__back { transform: rotateY(180deg); }
+.trunfo-card__shine {
+  --tc-angle: 0deg;
+  position: absolute; height: 100%; aspect-ratio: 0.583; left: 50%; top: 50%; transform: translate(-50%, -50%);
+  border-radius: 6% / 3.5%; padding: 3px; pointer-events: none;
+  background: conic-gradient(from var(--tc-angle), transparent 0deg, transparent 295deg, rgba(255, 255, 255, 0.15) 320deg, rgba(255, 255, 255, 0.95) 340deg, rgba(255, 255, 255, 0.15) 352deg, transparent 360deg);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  animation: tcShine 2.4s linear infinite, tcIn 0.4s ease 2.7s backwards;
+}
+.trunfo-card__sweep {
+  position: absolute; height: 100%; aspect-ratio: 0.583; left: 50%; top: 50%; transform: translate(-50%, -50%);
+  border-radius: 6% / 3.5%; overflow: hidden; pointer-events: none; mix-blend-mode: screen;
+}
+.trunfo-card__sweep::before {
+  content: ""; position: absolute; top: -30%; bottom: -30%; width: 45%; left: -60%;
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.12) 35%, rgba(255, 255, 255, 0.55) 50%, rgba(255, 255, 255, 0.12) 65%, transparent);
+  transform: skewX(-18deg);
+  opacity: 0;
+  animation: tcSweep 5s ease-in-out 3s infinite;
+}
+@property --tc-angle { syntax: "<angle>"; inherits: false; initial-value: 0deg; }
+@keyframes tcFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-14px); } }
+@keyframes tcFlip { from { transform: perspective(1200px) rotateY(180deg); } to { transform: perspective(1200px) rotateY(720deg); } }
+@keyframes tcShine { to { --tc-angle: 360deg; } }
+@keyframes tcIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes tcSweep {
+  0% { left: -60%; opacity: 1; }
+  16% { left: 130%; opacity: 1; }
+  16.01%, 100% { left: 130%; opacity: 0; }
+}
+/* Light grey glow, for the card on the light home page. */
+.trunfo-card--grey .trunfo-card__float {
+  filter: drop-shadow(0 32px 60px rgba(140, 140, 138, 0.45)) drop-shadow(0 12px 24px rgba(0, 0, 0, 0.22));
+}
+/* Not on screen yet, or reduced motion: the card face sits still. */
+.trunfo-card--idle .trunfo-card__float,
+.trunfo-card--idle .trunfo-card__flip,
+.trunfo-card--idle .trunfo-card__shine,
+.trunfo-card--idle .trunfo-card__sweep::before { animation: none; }
+.trunfo-card--idle .trunfo-card__flip { transform: none; }
+.trunfo-card--idle .trunfo-card__back,
+.trunfo-card--idle .trunfo-card__shine,
+.trunfo-card--idle .trunfo-card__sweep { display: none; }
+@media (prefers-reduced-motion: reduce) {
+  .trunfo-card__float, .trunfo-card__flip, .trunfo-card__shine, .trunfo-card__sweep::before { animation: none; }
+  .trunfo-card__flip { transform: none; }
+  .trunfo-card__back, .trunfo-card__shine, .trunfo-card__sweep { display: none; }
+}
+
+
+/* A row of cards drifting from right to left, looping without a seam (two identical groups, moving by one group). */
+.card-marquee { display: flex; width: max-content; animation: cardMarquee 36s linear infinite; }
+@keyframes cardMarquee { to { transform: translateX(-50%); } }
+@media (prefers-reduced-motion: reduce) { .card-marquee { animation: none; } }

@@ -14,6 +14,7 @@ import { Link, useLocation } from "react-router";
 import { CaseStudyRail } from "../components/CaseStudyRail";
 import { Contact } from "../components/Contact";
 import { MaskedTitle, Reveal, easeOut } from "../components/motion";
+import { TrunfoCard } from "../components/TrunfoCard";
 import { caseStudies, thumbnailOf } from "../content/caseStudies";
 
 export function Home() {
@@ -50,17 +51,20 @@ function Hero() {
   const slides = caseStudies.flatMap((study, project) => (study.heroShots ?? [thumbnailOf(study)]).map((image) => ({ project, image })));
   const current = slides[slide].project;
 
+  const next = () => setSlide((n) => (n + 1) % slides.length);
+
+  // Stills hold for a few seconds. A recording plays through and moves on when it ends, with a timer as a backstop.
   useEffect(() => {
     if (reduce) return;
-    const id = setInterval(() => setSlide((n) => (n + 1) % slides.length), 4800);
-    return () => clearInterval(id);
-  }, [reduce]);
+    const id = setTimeout(next, slides[slide].image.video ? 14000 : slides[slide].image.cardFlip ? 7500 : 4800);
+    return () => clearTimeout(id);
+  }, [reduce, slide]);
 
   return (
     <section className="mx-auto grid min-h-[100dvh] max-w-[1400px] items-center gap-12 px-4 pb-16 pt-24 md:px-8 lg:grid-cols-[1fr_1.05fr] lg:gap-8">
       <div>
         <MaskedTitle
-          text="From idea to product"
+          text="Shaping brands and products"
           className="max-w-[11ch] text-6xl font-medium leading-[0.92] tracking-[-0.035em] md:text-8xl"
         />
         <p className="mt-6 max-w-[34ch] text-balance text-lg leading-relaxed text-muted md:text-xl">
@@ -117,23 +121,61 @@ function Hero() {
       {/* The phone is as large as the screen allows and runs off the bottom edge. */}
       <div aria-hidden className="relative mx-auto h-[78dvh] w-full max-w-[640px] [clip-path:inset(-240px_-240px_0_-240px)] lg:h-[100dvh] lg:-my-24">
         <AnimatePresence initial>
-          <motion.img
+          <motion.div
             key={slide}
-            src={slides[slide].image.src}
-            alt=""
-            width={936}
-            height={1836}
-            draggable={false}
-            className="absolute left-1/2 top-[8%] block h-auto w-[min(65vw,387px)] max-w-none drop-shadow-[0_40px_60px_rgb(14_14_14/0.3)] lg:top-[12dvh] lg:w-[min(30.6vw,51.3dvh)]"
+            className="absolute left-1/2 top-[8%] w-[min(65vw,387px)] lg:top-[12dvh] lg:w-[min(30.6vw,51.3dvh)]"
             style={{ x: "-50%" }}
             initial={reduce ? false : { opacity: 0, y: 70, scale: 0.97 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -30, scale: 1.01 }}
             transition={{ duration: 1.1, ease: easeOut }}
-          />
+          >
+            {slides[slide].image.cardFlip ? (
+              <TrunfoCard playing grey className="mx-auto mt-[calc(6dvh-30px)] w-[90%]" />
+            ) : slides[slide].image.video && !reduce ? (
+              <PhoneVideo src={slides[slide].image.video!} poster={slides[slide].image.src} hideDot={slides[slide].image.hideRecordingDot} onEnded={next} />
+            ) : (
+              <img
+                src={slides[slide].image.src}
+                alt=""
+                width={936}
+                height={1836}
+                draggable={false}
+                className="block h-auto w-full max-w-none drop-shadow-[0_40px_60px_rgb(14_14_14/0.3)]"
+              />
+            )}
+          </motion.div>
         </AnimatePresence>
       </div>
     </section>
+  );
+}
+
+/**
+ * A screen recording seen through the phone frame. The recording sits behind the frame image, whose screen is
+ * transparent, so the frame's own rounded cut-out masks it; a matching radius keeps the edges clean.
+ * The screen opening is x 75-860 and y 64-1768 of the 936 x 1836 frame.
+ */
+function PhoneVideo({ src, poster, hideDot, onEnded }: { src: string; poster: string; hideDot?: boolean; onEnded: () => void }) {
+  return (
+    <div className="relative aspect-[936/1836] drop-shadow-[0_40px_60px_rgb(14_14_14/0.3)] [container-type:inline-size]">
+      <video
+        src={src}
+        poster={poster}
+        autoPlay
+        muted
+        playsInline
+        preload="auto"
+        onEnded={onEnded}
+        className="absolute bg-black object-cover"
+        style={{ left: "7.9%", top: "3.4%", width: "84.2%", height: "93.2%", borderRadius: "10.5cqw" }}
+      />
+      {/* A soft black patch under the frame's island hides the recording indicator (red dot and border) baked into the video. */}
+      {hideDot && (
+        <div aria-hidden className="absolute rounded-full bg-black blur-[0.9cqw]" style={{ left: "27%", top: "2.6%", width: "46%", height: "6.6%" }} />
+      )}
+      <img src="/work/mockups/phone-frame.png" alt="" width={936} height={1836} draggable={false} className="pointer-events-none absolute inset-0 block h-full w-full" />
+    </div>
   );
 }
 
@@ -202,14 +244,14 @@ function Approach() {
           <DoubleDiamond progress={reduce ? drawn : draw} />
         </div>
 
-        <ol className="flex flex-col gap-16 lg:gap-28 lg:pt-48">
+        <ol className="flex flex-col gap-12 lg:gap-16 lg:pt-48">
           {principles.map((p, i) => (
             <Reveal key={p.title} delay={i * 0.05}>
-              <li className="border-t border-line pt-6">
+              <li>
                 {/* Masked so the mark takes the text colour in both themes. */}
                 <span
                   aria-hidden
-                  className="mb-6 block h-12 w-10 bg-fg"
+                  className="mb-6 block h-[66px] w-[55px] bg-fg"
                   style={{
                     maskImage: `url(${p.icon})`,
                     WebkitMaskImage: `url(${p.icon})`,

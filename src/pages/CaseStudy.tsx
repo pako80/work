@@ -126,9 +126,9 @@ function StudyContent({ study }: { study: CaseStudy }) {
         <Intro study={study} />
         {hasImpact(study) && <Impact study={study} />}
         <Stages stages={study.stages} />
-        <Outcomes screens={study.outcomeScreens} />
+        <Outcomes screens={study.outcomeScreens} gallery={study.gallery} />
         {study.learnings.length > 0 && <Learnings learnings={study.learnings} />}
-        {study.links?.length ? <Links links={study.links} /> : null}
+        {study.links?.length ? <Links links={study.links} title={study.linksTitle ?? "Prototypes"} /> : null}
         <MoreStudies current={study} />
       </main>
     </>
@@ -200,7 +200,12 @@ function Intro({ study }: { study: CaseStudy }) {
         />
       </header>
 
-      <SectionNav hasImpact={hasImpact(study)} hasLinks={!!study.links?.length} hasLearnings={study.learnings.length > 0} />
+      <SectionNav
+        hasImpact={hasImpact(study)}
+        hasLinks={!!study.links?.length}
+        linksTitle={study.linksTitle ?? "Prototypes"}
+        hasLearnings={study.learnings.length > 0}
+      />
 
       <Section id="introduction" title="Introduction" className="pt-24 md:pt-40">
         <div className="grid gap-12 xl:grid-cols-[minmax(0,1fr)_260px] xl:gap-16">
@@ -232,17 +237,19 @@ function Intro({ study }: { study: CaseStudy }) {
 /* ---------------------------------------------------------------- Impact teaser */
 
 function Impact({ study }: { study: CaseStudy }) {
+  // Three metrics share the row, so their figures scale with the row's width instead of overflowing a narrow column.
+  const crowded = study.impact.metrics.length >= 3;
   return (
     <div className="mt-32 bg-card py-24 md:mt-48 md:py-36">
       <Section id="impact" title="Impact">
         <Reveal>
           <p className="max-w-[34ch] text-2xl leading-snug tracking-[-0.01em] md:text-3xl">{study.impact.lead}</p>
         </Reveal>
-        <dl className="mt-16 grid gap-10 sm:grid-cols-3 sm:gap-0 md:mt-24">
+        <dl className={`mt-16 grid gap-10 sm:grid-cols-3 sm:gap-0 md:mt-24 ${crowded ? "[container-type:inline-size]" : ""}`}>
           {study.impact.metrics.map((m, i) => (
             <Reveal key={m.label} delay={i * 0.1} className="sm:border-l sm:border-line sm:px-6 sm:first:border-l-0 sm:first:pl-0">
               <dt className="sr-only">{m.label}</dt>
-              <dd className="text-6xl font-medium tracking-[-0.04em] md:text-7xl lg:text-8xl">
+              <dd className={`text-6xl font-medium tracking-[-0.04em] ${crowded ? "sm:text-[min(8rem,9cqw)]" : "md:text-7xl lg:text-8xl"}`}>
                 <CountUp value={m.value} />
               </dd>
               <dd className="mt-3 max-w-[24ch] text-[15px] leading-snug text-muted">{m.label}</dd>
@@ -276,7 +283,7 @@ function Stages({ stages }: { stages: Stage[] }) {
               {/* Every step's image is stacked here; the reader's scroll position decides how much of each shows. */}
               <div className="relative aspect-[6/5] w-full overflow-hidden rounded-[20px] bg-card">
                 {stages.map((stage, i) => (
-                  <ImageLayer key={stage.name} stage={stage} index={i} refs={blockRefs} reduce={!!reduce} />
+                  <ImageLayer key={stage.name} stage={stage} index={i} refs={blockRefs} reduce={!!reduce} active={i === active} />
                 ))}
               </div>
               {/* Captions crossfade on the same scroll, set under the image rather than over it. */}
@@ -343,11 +350,13 @@ function ImageLayer({
   index,
   refs,
   reduce,
+  active,
 }: {
   stage: Stage;
   index: number;
   refs: RefObject<HTMLDivElement | null>[];
   reduce: boolean;
+  active: boolean;
 }) {
   const progress = useStageProgress(refs, index);
   // A gentle ease at both ends, so the picture settles into place instead of stopping dead.
@@ -361,14 +370,14 @@ function ImageLayer({
   if (reduce) {
     return (
       <motion.div className="absolute inset-0" style={{ opacity: incoming, zIndex: index }}>
-        <StageMedia stage={stage} className="h-full w-full" />
+        <StageMedia stage={stage} active={active} className="h-full w-full" />
       </motion.div>
     );
   }
   return (
     <motion.div className="absolute inset-0" style={{ clipPath, zIndex: index }}>
       <motion.div className="h-full w-full" style={{ scale, opacity: dim }}>
-        <StageMedia stage={stage} className="h-full w-full" />
+        <StageMedia stage={stage} active={active} className="h-full w-full" />
       </motion.div>
     </motion.div>
   );
@@ -464,7 +473,7 @@ function PointList({ points }: { points: string[] }) {
 /* ---------------------------------------------------------------- Outcomes */
 
 /** Solution: up to six full-size phone screenshots, three across on larger screens. */
-function Outcomes({ screens }: { screens: Image[] }) {
+function Outcomes({ screens, gallery }: { screens: Image[]; gallery?: CaseStudy["gallery"] }) {
   return (
     <Section id="outcomes" title="Solution" className="pt-32 md:pt-48">
       <ul className="grid grid-cols-2 gap-x-4 gap-y-10 md:grid-cols-3 md:gap-x-6 md:gap-y-14">
@@ -484,6 +493,28 @@ function Outcomes({ screens }: { screens: Image[] }) {
           </li>
         ))}
       </ul>
+      {gallery && (
+        <div className="mt-20 md:mt-28">
+          <h3 className="text-[15px] font-medium text-muted">{gallery.title}</h3>
+          <ul className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4 md:gap-4">
+            {gallery.images.map((image, i) => (
+              <li key={image.src}>
+                <Reveal delay={(i % 4) * 0.06}>
+                  <img
+                    src={image.src}
+                    alt={image.alt}
+                    width={420}
+                    height={720}
+                    loading="lazy"
+                    draggable={false}
+                    className="h-auto w-full"
+                  />
+                </Reveal>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </Section>
   );
 }
@@ -529,9 +560,9 @@ function LearningItem({ learning }: { learning: Learning }) {
 
 /* ---------------------------------------------------------------- Links */
 
-function Links({ links }: { links: StudyLink[] }) {
+function Links({ links, title }: { links: StudyLink[]; title: string }) {
   return (
-    <Section id="links" title="Prototypes" className="pt-32 md:pt-48">
+    <Section id="links" title={title} className="pt-32 md:pt-48">
       <ul className="flex flex-col">
         {links.map((l) => (
           <li key={l.url} className="border-t border-line last:border-b">
@@ -539,7 +570,7 @@ function Links({ links }: { links: StudyLink[] }) {
               href={l.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="group flex items-center justify-between gap-6 py-6 text-2xl font-medium tracking-[-0.02em] md:py-8 md:text-4xl"
+              className="group flex items-center justify-between gap-6 py-6 text-2xl font-normal tracking-[-0.02em] md:py-8 md:text-4xl"
             >
               {l.label}
               <ArrowUpRight
@@ -600,7 +631,17 @@ function CloseButton({ onClose }: { onClose: () => void }) {
 
 /* ---------------------------------------------------------------- Section navigator */
 
-function SectionNav({ hasImpact, hasLinks, hasLearnings }: { hasImpact: boolean; hasLinks: boolean; hasLearnings: boolean }) {
+function SectionNav({
+  hasImpact,
+  hasLinks,
+  linksTitle,
+  hasLearnings,
+}: {
+  hasImpact: boolean;
+  hasLinks: boolean;
+  linksTitle: string;
+  hasLearnings: boolean;
+}) {
   const items = sections.filter(
     (s) => (s.id !== "impact" || hasImpact) && (s.id !== "links" || hasLinks) && (s.id !== "learnings" || hasLearnings),
   );
@@ -642,7 +683,7 @@ function SectionNav({ hasImpact, hasLinks, hasLearnings }: { hasImpact: boolean;
                 }}
                 className={`block py-2 transition-colors duration-300 hover:text-fg ${selected ? "text-fg" : "text-muted"}`}
               >
-                {s.label}
+                {s.id === "links" ? linksTitle : s.label}
               </a>
               {selected && (
                 <motion.span

@@ -12,6 +12,12 @@
 export interface Image {
   src: string;
   alt: string;
+  /** A screen recording shown inside the phone frame in the home hero. `src` is then the still used as the poster. */
+  video?: string;
+  /** The recording has the iOS screen-recording indicator at the top: hide it behind a black patch. */
+  hideRecordingDot?: boolean;
+  /** In the home hero, show the flipping Trunfo card instead of a phone. */
+  cardFlip?: boolean;
 }
 
 export interface Stage {
@@ -29,6 +35,12 @@ export interface Stage {
   badges?: Badge[];
   /** A cropped screenshot of one screen, without a phone frame. */
   screen?: Screen;
+  /** A row of images drifting slowly from right to left, looping, on the dark panel. */
+  marquee?: Image[];
+  /** The Trunfo card that flips, floats and glints, played while this stage is on screen. */
+  cardFlip?: boolean;
+  /** A looping Lottie animation centred on the panel. */
+  lottie?: { src: string; label: string };
   /** A finished wide image (cards, components) shown whole and centred on the panel, without phones. */
   image?: Image;
   /** Width of that image as a percentage of the panel. Above 100 the panel edge crops it. Defaults to 100. */
@@ -37,8 +49,12 @@ export interface Stage {
   imageOffset?: [number, number];
   /** Pin a tall image to the panel's bottom edge, so the panel crops the top of it. */
   imageBottom?: boolean;
+  /** Pin a tall image to the panel's top edge instead, so the panel crops the bottom of it. */
+  imageTop?: boolean;
   /** Phones enlarged so the panel's bottom edge crops them. */
   crop?: boolean;
+  /** A Lottie laid over the image's corner, e.g. to point out an entry point. Sizes are percentages of the panel. */
+  overlay?: { src: string; label: string; width: number; right: number; bottom: number; nudge?: [number, number] };
   /** A short label under the image: just the title of what it shows. */
   caption?: string;
   /** An SVG of the component this step is about, shown under the text. */
@@ -105,6 +121,10 @@ export interface CaseStudy {
   outcomeScreens: Image[];
   /** Optional text links, e.g. live prototypes. The Links section only shows when this has entries. */
   links?: StudyLink[];
+  /** Extra images shown under the Solution screens, with a small subtitle, e.g. the cards of a card game. */
+  gallery?: { title: string; images: Image[] };
+  /** Name of the links section and its tab. Defaults to "Prototypes". */
+  linksTitle?: string;
   learnings: Learning[];
 }
 
@@ -158,6 +178,9 @@ const jackpotInGame: Image = { src: "/work/mockups/jackpot-in-game.png", alt: "K
 const jackpotContribution: Image = { src: "/work/mockups/jackpot-contribution.png", alt: "KTO Jackpot Pick contribution sheet over Fortune Tiger, with five contribution levels" };
 const jackpotWheel: Image = { src: "/work/mockups/jackpot-wheel.png", alt: "KTO Jackpot prize wheel with the Mega, Major, Minor and Mini amounts" };
 const jackpotSplash: Image = { src: "/work/mockups/jackpot-splash.png", alt: "KTO Jackpot launch screen with the jackpot amounts and the line Hotter wins. Every spin." };
+const trunfoDrawCard: Image = { src: "/work/mockups/trunfo-draw-card.png", alt: "KTO Trunfo Draw a card screen with the daily calendar, a KTO Black 10k card and the reward details" };
+const trunfoPack: Image = { src: "/work/mockups/trunfo-pack.png", alt: "KTO Trunfo Draw a card screen showing a sealed card pack, available tomorrow" };
+const liveTennis: Image = { src: "/work/mockups/live-tennis.png", alt: "KTO sportsbook live lobby on the Hot tab, showing live tennis matches" };
 const casinoHome: Image = { src: "/work/mockups/casino-home.png", alt: "KTO casino home screen with the Icescape promotion, game categories, Continue Playing and Best Games" };
 const jackpotsHome: Image = { src: "/work/mockups/jackpots-home.png", alt: "KTO Jackpot screen with the Mega, Major, Minor and Mini prizes above the prize wheel" };
 const trunfoHome: Image = { src: "/work/mockups/trunfo-home.png", alt: "KTO Trunfo opt-in screen: draw a card daily, collect cards and claim rewards" };
@@ -465,6 +488,7 @@ export const caseStudies: CaseStudy[] = [
     },
     description: "A fully native redesign of KTO’s main casino vertical based on the inhouse platform.",
     thumbnail: casinoHome,
+    heroShots: [{ ...casinoHome, video: "/work/video/casino-lobby.mp4", hideRecordingDot: true }],
     stages: [
       {
         name: "Discover & Define",
@@ -529,7 +553,7 @@ export const caseStudies: CaseStudy[] = [
     ...draftContent(),
     description: "An agnostic Jackpot Product designed and built for the Brazilian market on the PrizeFlex APIs.",
     thumbnail: jackpotsHome,
-    heroShots: [jackpotsHome, jackpotSplash],
+    heroShots: [jackpotsHome],
     stages: [
       {
         name: "Discover & Define",
@@ -573,9 +597,82 @@ export const caseStudies: CaseStudy[] = [
     title: "KTO Trunfo",
     ...kto,
     ...draftContent(),
-    description: "An in-house reward-based card game designed to drive daily engagement. Customers collect and open card packs, with each pack offering the chance to unlock rewards daily.",
+    description: "An in-house reward-based card game designed to boost daily engagement through collectible card packs and daily rewards.",
+    years: "2026",
+    impact: {
+      ...draftContent().impact,
+      lead: "Trunfo was launched for the 2026 World Cup and the impact on retention was significant.",
+      metrics: [
+        { value: "3M", label: "Daily rewards delivered to customers, from Freespins to Freebet and Odds Boosts" },
+        { value: "89%", label: "Average daily card pack open rate with customers interacting on a daily basis" },
+        { value: "90.5K", label: "ATH of daily customers participating in the card draw" },
+      ],
+    },
+    introduction: [
+      "An in-house reward-based card game designed to boost daily engagement through collectible card packs and daily rewards.",
+      "I shaped the branding, product design and assets for this in-house built product.",
+    ],
+    stages: [
+      {
+        name: "Discover & Define",
+        summary: "Discover & Define",
+        body: "",
+        points: [
+          "Discover entry points",
+          "Define an intuitive navigation pattern",
+          "Add surprise element using motion",
+          "Create engaging card designs",
+        ],
+        lottie: { src: "/lottie/trunfo.json", label: "The KTO Trunfo card animation" },
+      },
+      {
+        name: "Discover entry points",
+        summary: "Discover entry points",
+        body: "",
+        image: liveTennis,
+        imageWidth: 80,
+        imageBottom: true,
+        overlay: { src: "/lottie/trunfo-entrypoint.json", label: "The entry point to KTO Trunfo", width: 11.9, right: 14.5, bottom: 6, nudge: [-24, -22] },
+        shots: [],
+      },
+      // Titles only for now; each shows the Trunfo phone until its own screens arrive.
+      {
+        name: "Define an intuitive navigation pattern",
+        summary: "Define an intuitive navigation pattern",
+        body: "",
+        image: trunfoPack,
+        imageWidth: 80,
+        imageTop: true,
+        shots: [],
+      },
+      { name: "Add surprise element using motion", summary: "Add surprise element using motion", body: "", cardFlip: true, shots: [] },
+      {
+        name: "Create engaging card designs",
+        summary: "Create engaging card designs",
+        body: "",
+        marquee: [2, 3, 4, 5].map((n) => ({ src: `/work/trunfo/card-${n}.png`, alt: `KTO Trunfo card design ${n - 1}` })),
+        shots: [],
+      },
+    ],
+    outcomeScreens: [trunfoPack, trunfoDrawCard],
+    gallery: {
+      title: "Cards",
+      images: [
+        { src: "/work/trunfo/card-1.png", alt: "KTO Trunfo sample card 1" },
+        { src: "/work/trunfo/card-2.png", alt: "KTO Trunfo sample card 2" },
+        { src: "/work/trunfo/card-3.png", alt: "KTO Trunfo sample card 3" },
+        { src: "/work/trunfo/card-4.png", alt: "KTO Trunfo sample card 4" },
+        { src: "/work/trunfo/card-5.png", alt: "KTO Trunfo sample card 5" },
+        { src: "/work/trunfo/card-6.png", alt: "KTO Trunfo sample card 6" },
+        { src: "/work/trunfo/card-7.png", alt: "KTO Trunfo sample card 7" },
+        { src: "/work/trunfo/card-8.png", alt: "KTO Trunfo sample card 8" },
+      ],
+    },
+    learnings: [],
+    linksTitle: "Links",
+    links: [{ label: "Marketing Landing Page", url: "https://trunfo-chi.vercel.app" }],
     thumbnail: trunfoHome,
-    comingSoon: true,
+    heroShots: [trunfoHome, { ...trunfoHome, cardFlip: true }],
   },
 ];
 
