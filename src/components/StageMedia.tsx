@@ -32,11 +32,13 @@ function MarqueeStage({ images, className }: { images: Image[]; className?: stri
     </ul>
   );
   return (
-    <div className={`relative flex items-center overflow-hidden bg-[#1e1e1e] ${className ?? ""}`}>
-      <div className="w-full" style={{ height: "74%" }}>
-        <div className="card-marquee h-full">
-          {group(false)}
-          {group(true)}
+    <div className={`relative overflow-hidden bg-[#1e1e1e] ${className ?? ""}`}>
+      <div className="absolute inset-0 flex items-center">
+        <div className="w-full" style={{ height: "74%" }}>
+          <div className="card-marquee h-full">
+            {group(false)}
+            {group(true)}
+          </div>
         </div>
       </div>
     </div>
@@ -52,17 +54,23 @@ function CardFlipStage({ active, className }: { active?: boolean; className?: st
   const seen = useInView(ref, { amount: 0.6 });
   const playing = active ?? seen;
   return (
-    <div ref={ref} className={`relative flex items-center justify-center overflow-hidden bg-[#1e1e1e] ${className ?? ""}`}>
-      <TrunfoCard playing={playing} style={{ height: "84%" }} />
+    <div ref={ref} className={`relative overflow-hidden bg-[#1e1e1e] ${className ?? ""}`}>
+      <div className="absolute inset-0 flex items-center justify-center">
+        <TrunfoCard playing={playing} style={{ height: "84%" }} />
+      </div>
     </div>
   );
 }
 
 /** A looping Lottie animation, centred on a dark panel. */
 function LottieStage({ src, label, className }: { src: string; label: string; className?: string }) {
+  // The contents fill an absolutely positioned layer so their percentage heights resolve in Safari,
+  // which does not reliably resolve them against a box whose height comes from `aspect-ratio`.
   return (
-    <div className={`relative flex items-center justify-center overflow-hidden bg-[#1e1e1e] ${className ?? ""}`}>
-      <LottieIcon src={src} label={label} className="block aspect-square h-[78%]" />
+    <div className={`relative overflow-hidden bg-[#1e1e1e] ${className ?? ""}`}>
+      <div className="absolute inset-0 flex items-center justify-center">
+        <LottieIcon src={src} label={label} className="block aspect-square h-[78%]" />
+      </div>
     </div>
   );
 }
