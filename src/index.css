@@ -171,8 +171,9 @@ html {
 /* Header: frosted so whatever scrolls beneath it reads only as a soft blur of colour. */
 .header-glass {
   background: color-mix(in oklab, var(--bg) 62%, transparent);
-  backdrop-filter: blur(28px) saturate(160%);
-  -webkit-backdrop-filter: blur(28px) saturate(160%);
+  /* Tailwind's own utilities, because they come out with both the prefixed and unprefixed property.
+     Written by hand, the production minifier dropped the unprefixed one, which left Chrome and Firefox with no blur. */
+  @apply backdrop-blur-[28px] backdrop-saturate-[160%];
 }
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
   .header-glass {
@@ -182,8 +183,7 @@ html {
 @media (prefers-reduced-transparency: reduce) {
   .header-glass {
     background: var(--bg);
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
+    @apply backdrop-filter-none;
   }
 }
 
