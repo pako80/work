@@ -14,6 +14,8 @@ export interface Image {
   alt: string;
   /** A screen recording shown inside the phone frame in the home hero. `src` is then the still used as the poster. */
   video?: string;
+  /** The still shown until the recording starts (or if it cannot autoplay). It must be the bare screen: the phone frame is drawn over it. */
+  videoPoster?: string;
   /** The recording has the iOS screen-recording indicator at the top: hide it behind a black patch. */
   hideRecordingDot?: boolean;
   /** In the home hero, show the flipping Trunfo card instead of a phone. */
@@ -488,7 +490,7 @@ export const caseStudies: CaseStudy[] = [
     },
     description: "A fully native redesign of KTO’s main casino vertical based on the inhouse platform.",
     thumbnail: casinoHome,
-    heroShots: [{ ...casinoHome, video: "/work/video/casino-lobby.mp4", hideRecordingDot: true }],
+    heroShots: [{ ...casinoHome, video: "/work/video/casino-lobby.mp4", videoPoster: "/work/mockups/casino-home-screen.jpg", hideRecordingDot: true }],
     stages: [
       {
         name: "Discover & Define",

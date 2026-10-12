@@ -133,7 +133,7 @@ function Hero() {
             {slides[slide].image.cardFlip ? (
               <TrunfoCard playing grey className="mx-auto mt-[calc(6dvh-30px)] w-[90%]" />
             ) : slides[slide].image.video && !reduce ? (
-              <PhoneVideo src={slides[slide].image.video!} poster={slides[slide].image.src} hideDot={slides[slide].image.hideRecordingDot} onEnded={next} />
+              <PhoneVideo src={slides[slide].image.video!} poster={slides[slide].image.videoPoster ?? slides[slide].image.src} hideDot={slides[slide].image.hideRecordingDot} onEnded={next} />
             ) : (
               <img
                 src={slides[slide].image.src}
