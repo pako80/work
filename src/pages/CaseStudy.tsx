@@ -572,7 +572,10 @@ function Links({ links, title }: { links: StudyLink[]; title: string }) {
               rel="noopener noreferrer"
               className="group flex items-center justify-between gap-6 py-6 text-2xl font-normal tracking-[-0.02em] md:py-8 md:text-4xl"
             >
-              {l.label}
+              <span className="flex items-center gap-4 md:gap-5">
+                <img src="/icons/claude.svg" alt="" aria-hidden width={40} height={40} className="size-6 shrink-0 md:size-9" />
+                {l.label}
+              </span>
               <ArrowUpRight
                 weight="light"
                 aria-hidden
@@ -619,7 +622,7 @@ function CloseButton({ onClose }: { onClose: () => void }) {
       onClick={onClose}
       aria-label="Close case study"
       title="Close (Esc)"
-      className="group absolute right-3 top-4 z-10 grid size-11 place-items-center rounded-full border border-line bg-bg text-fg transition-colors duration-300 hover:border-fg hover:bg-fg hover:text-on-fg active:scale-[0.96] md:right-5 md:top-5"
+      className="group absolute right-3 top-4 z-30 grid size-11 place-items-center rounded-full border border-line bg-bg text-fg transition-colors duration-300 hover:border-fg hover:bg-fg hover:text-on-fg active:scale-[0.96] md:right-5 md:top-5"
       initial={reduce ? false : { opacity: 0, scale: 0.8, rotate: -90 }}
       animate={{ opacity: 1, scale: 1, rotate: 0 }}
       transition={{ duration: 0.7, ease: easeOut, delay: 0.45 }}

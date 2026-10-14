@@ -166,7 +166,6 @@ const casinoDeposit: Image = { src: "/work/mockups/casino-deposit.png", alt: "KT
 const casinoCrash: Image = { src: "/work/mockups/casino-crash-games.png", alt: "KTO native casino Crash Games category with sort by popularity" };
 const casinoVisuals: Image = { src: "/work/mockups/casino-visuals.png", alt: "KTO native casino game cards: Ganesha Fortune, The Tiger Is Back and The Great Icescape" };
 const casinoNavigationGames: Image = { src: "/work/mockups/casino-navigation-games.png", alt: "Game cards in the native casino: Piggy Gold, Fortune Dragon and Fortune Tiger" };
-const casinoFiltering: Image = { src: "/work/mockups/casino-filtering.png", alt: "Game filtering in the native casino" };
 const casinoDepositPhone: Image = { src: "/work/mockups/casino-deposit.png", alt: "KTO native casino in-game Deposit sheet over Ganesha Gold with quick amounts" };
 const jackpotComponent: Image = { src: "/work/mockups/jackpot-component.png", alt: "KTO Jackpot component with the Mega, Major, Minor and Mini jackpot amounts and an opt-in switch" };
 // The jackpot tiers, drawn as an SVG for the third Jackpot step.
@@ -223,6 +222,15 @@ const fomoIllustration: Screen = {
   alt: "An event card carrying a FOMO label: Flamengo against Bahia, live score, match winner odds and a Sizzling tag",
   width: 367,
   height: 144,
+};
+
+// Ranked casino game cards (Fortune Tiger, Fortune Ox, Midas Fortune), shown under the Enrich UI With Casino Visuals text.
+const casinoTopGames: Screen = {
+  src: "/work/components/casino-top-games.png",
+  alt: "Top casino games ranked one to three: Fortune Tiger, Fortune Ox and Midas Fortune, each with a NEW badge and a count of players currently playing",
+  width: 798,
+  height: 384,
+  scale: 0.6,
 };
 
 // The live lobby illustration, drawn as an SVG for the Redesigned Live Lobby step.
@@ -511,7 +519,8 @@ export const caseStudies: CaseStudy[] = [
       {
         name: "Enrich UI With Casino Visuals",
         summary: "Enrich UI With Casino Visuals",
-        body: "The casino experience was enriched by leveraging game imagery and visual elements to create a more immersive, Netflix-like browsing experience.\n\nThe goal was to move beyond a functional game catalogue and make discovery more engaging, using rich visuals, curated content and stronger hierarchy to help customers quickly find games they want to play.",
+        body: "The casino experience was enriched by leveraging game imagery and visual elements to create a more immersive, Netflix-like browsing experience as well as FOMO elements and top 10 games near you.",
+        illustration: casinoTopGames,
         image: casinoVisuals,
         imageWidth: 135,
         shots: [],
@@ -520,10 +529,8 @@ export const caseStudies: CaseStudy[] = [
         name: "Game Filtering",
         summary: "Game Filtering",
         body: "The game filtering experience was redesigned to make finding relevant titles faster and more intuitive. Popularity logic was improved to surface the most relevant games, while new filters allowed customers to search by game name and provider.\n\nThe UX focused on reducing browsing effort and giving customers more control over how they discover and navigate the game catalogue.",
-        image: casinoFiltering,
-        imageWidth: 100,
-        imageOffset: [100, 100],
-        shots: [],
+        shots: [casinoProviders],
+        crop: true,
       },
       {
         name: "In-Game Deposit",
