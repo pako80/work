@@ -180,6 +180,9 @@ const jackpotContribution: Image = { src: "/work/mockups/jackpot-contribution.pn
 const jackpotWheel: Image = { src: "/work/mockups/jackpot-wheel.png", alt: "KTO Jackpot prize wheel with the Mega, Major, Minor and Mini amounts" };
 const jackpotSplash: Image = { src: "/work/mockups/jackpot-splash.png", alt: "KTO Jackpot launch screen with the jackpot amounts and the line Hotter wins. Every spin." };
 const trunfoDrawCard: Image = { src: "/work/mockups/trunfo-draw-card.png", alt: "KTO Trunfo Draw a card screen with the daily calendar, a KTO Black 10k card and the reward details" };
+const trunfoOptin2: Image = { src: "/work/mockups/trunfo-optin-2.png", alt: "KTO Trunfo opt-in screen: a pack tearing open over cards, with Opt-in and Later buttons" };
+const trunfoMissedDetail: Image = { src: "/work/mockups/trunfo-missed-detail.png", alt: "KTO Trunfo reward detail for a previous day: 10 free spins, how to claim them and when the pack was opened" };
+const trunfoMissedChance: Image = { src: "/work/mockups/trunfo-missed-chance.png", alt: "KTO Trunfo Draw a card screen for a missed day: a sealed pack and the message You missed your chance" };
 const trunfoPack: Image = { src: "/work/mockups/trunfo-pack.png", alt: "KTO Trunfo Draw a card screen showing a sealed card pack, available tomorrow" };
 const liveTennis: Image = { src: "/work/mockups/live-tennis.png", alt: "KTO sportsbook live lobby on the Hot tab, showing live tennis matches" };
 const casinoHome: Image = { src: "/work/mockups/casino-home.png", alt: "KTO casino home screen with the Icescape promotion, game categories, Continue Playing and Best Games" };
@@ -668,7 +671,8 @@ export const caseStudies: CaseStudy[] = [
         shots: [],
       },
     ],
-    outcomeScreens: [trunfoPack, trunfoDrawCard],
+    // Order: opt-in, pack, reward detail, missed chance, VIP card.
+    outcomeScreens: [trunfoOptin2, trunfoPack, trunfoMissedDetail, trunfoMissedChance, trunfoDrawCard],
     gallery: {
       title: "Cards",
       images: [
