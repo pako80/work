@@ -70,7 +70,7 @@ function Hero() {
         <p className="mt-6 max-w-[34ch] text-balance text-lg leading-relaxed text-muted md:text-xl">
           Products and brand experiences I’ve led from vision to execution.
         </p>
-        <ul className="mt-6 flex flex-col gap-1 md:mt-8" aria-label="Case studies">
+        <ul className="mt-6 flex flex-col md:mt-8" aria-label="Case studies">
           {caseStudies.map((study, i) => (
             <motion.li
               key={study.slug}
@@ -80,7 +80,7 @@ function Hero() {
             >
               <Link
                 to={`/work/${study.slug}`}
-                className={`group inline-flex items-center gap-3 py-1.5 text-lg no-underline transition-colors duration-700 ${
+                className={`group inline-flex items-center gap-3 py-1 text-lg leading-snug no-underline transition-colors duration-700 ${
                   current === i ? "text-fg" : "text-soft"
                 }`}
               >
@@ -142,6 +142,11 @@ function Hero() {
                 height={1836}
                 draggable={false}
                 className="block h-auto w-full max-w-none drop-shadow-[0_40px_60px_rgb(14_14_14/0.3)]"
+                style={
+                  slides[slide].image.heroScale
+                    ? { width: `${slides[slide].image.heroScale! * 100}%`, marginLeft: `${(1 - slides[slide].image.heroScale!) * 50}%` }
+                    : undefined
+                }
               />
             )}
           </motion.div>

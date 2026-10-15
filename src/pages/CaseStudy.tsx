@@ -126,7 +126,7 @@ function StudyContent({ study }: { study: CaseStudy }) {
         <Intro study={study} />
         {hasImpact(study) && <Impact study={study} />}
         <Stages stages={study.stages} />
-        <Outcomes screens={study.outcomeScreens} gallery={study.gallery} />
+        <Outcomes screens={study.outcomeScreens} gallery={study.gallery} sheets={study.sheets} />
         {study.learnings.length > 0 && <Learnings learnings={study.learnings} />}
         {study.links?.length ? <Links links={study.links} title={study.linksTitle ?? "Prototypes"} /> : null}
         <MoreStudies current={study} />
@@ -473,9 +473,10 @@ function PointList({ points }: { points: string[] }) {
 /* ---------------------------------------------------------------- Outcomes */
 
 /** Solution: up to six full-size phone screenshots, three across on larger screens. */
-function Outcomes({ screens, gallery }: { screens: Image[]; gallery?: CaseStudy["gallery"] }) {
+function Outcomes({ screens, gallery, sheets }: { screens: Image[]; gallery?: CaseStudy["gallery"]; sheets?: Image[] }) {
   return (
     <Section id="outcomes" title="Solution" className="pt-32 md:pt-48">
+      {screens.length > 0 && (
       <ul className="grid grid-cols-2 gap-x-4 gap-y-10 md:grid-cols-3 md:gap-x-6 md:gap-y-14">
         {screens.slice(0, 6).map((screen, i) => (
           <li key={`${screen.src}-${i}`}>
@@ -493,6 +494,7 @@ function Outcomes({ screens, gallery }: { screens: Image[]; gallery?: CaseStudy[
           </li>
         ))}
       </ul>
+      )}
       {gallery && (
         <div className="mt-20 md:mt-28">
           <h3 className="text-[15px] font-medium text-muted">{gallery.title}</h3>
@@ -514,6 +516,25 @@ function Outcomes({ screens, gallery }: { screens: Image[]; gallery?: CaseStudy[
             ))}
           </ul>
         </div>
+      )}
+      {sheets && sheets.length > 0 && (
+        <ul className={`grid grid-cols-1 gap-4 md:gap-6 ${screens.length > 0 || gallery ? "mt-20 md:mt-28" : ""}`}>
+          {sheets.map((sheet, i) => (
+            <li key={sheet.src}>
+              <Reveal delay={0}>
+                <img
+                  src={sheet.src}
+                  alt={sheet.alt}
+                  width={2000}
+                  height={1461}
+                  loading="lazy"
+                  draggable={false}
+                  className="h-auto w-full rounded-[20px]"
+                />
+              </Reveal>
+            </li>
+          ))}
+        </ul>
       )}
     </Section>
   );

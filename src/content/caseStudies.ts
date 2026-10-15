@@ -20,6 +20,8 @@ export interface Image {
   hideRecordingDot?: boolean;
   /** In the home hero, show the flipping Trunfo card instead of a phone. */
   cardFlip?: boolean;
+  /** In the home hero, scale a still up (1.15 is 15% larger) around its centre. Defaults to 1. */
+  heroScale?: number;
 }
 
 export interface Stage {
@@ -43,6 +45,18 @@ export interface Stage {
   cardFlip?: boolean;
   /** A looping Lottie animation centred on the panel. */
   lottie?: { src: string; label: string };
+  /** A short looping, muted video shown on the panel, fitted whole and centred. `fill` crops it to fill the panel instead, trimming whatever overflows. */
+  video?: {
+    src: string;
+    label: string;
+    fill?: boolean;
+    /** Show a tall screen recording the way a screenshot is shown: narrow, rounded at the top, hanging from near the top of the panel. */
+    screen?: { top?: number; headerSpace?: number };
+    /** Nudge the video down (positive) or up inside the panel, in pixels. */
+    offsetY?: number;
+    /** The clip has sound: show a mute toggle at the bottom right. It always starts muted. */
+    sound?: boolean;
+  };
   /** A finished wide image (cards, components) shown whole and centred on the panel, without phones. */
   image?: Image;
   /** Width of that image as a percentage of the panel. Above 100 the panel edge crops it. Defaults to 100. */
@@ -125,6 +139,8 @@ export interface CaseStudy {
   links?: StudyLink[];
   /** Extra images shown under the Solution screens, with a small subtitle, e.g. the cards of a card game. */
   gallery?: { title: string; images: Image[] };
+  /** Wide images, such as character sheets, shown under the Solution screens, one above the other at full width. */
+  sheets?: Image[];
   /** Name of the links section and its tab. Defaults to "Prototypes". */
   linksTitle?: string;
   learnings: Learning[];
@@ -140,7 +156,7 @@ const definePoints = ["Event Cards", "Navigation", "Player Props", "Combi & Bet 
 // One improvement area of the sportsbook, titled by its name. Text is a placeholder until written.
 const areaStage = (
   name: string,
-  media: Pick<Stage, "shots" | "badges" | "screen">,
+  media: Pick<Stage, "shots" | "badges" | "screen" | "video">,
   body = "Replace with what the problem was in this area, what you designed, and what changed as a result.",
   caption = name,
 ): Stage => ({
@@ -180,6 +196,13 @@ const jackpotContribution: Image = { src: "/work/mockups/jackpot-contribution.pn
 const jackpotWheel: Image = { src: "/work/mockups/jackpot-wheel.png", alt: "KTO Jackpot prize wheel with the Mega, Major, Minor and Mini amounts" };
 const jackpotSplash: Image = { src: "/work/mockups/jackpot-splash.png", alt: "KTO Jackpot launch screen with the jackpot amounts and the line Hotter wins. Every spin." };
 const trunfoDrawCard: Image = { src: "/work/mockups/trunfo-draw-card.png", alt: "KTO Trunfo Draw a card screen with the daily calendar, a KTO Black 10k card and the reward details" };
+// Temporary stand-in until the Ciko visuals arrive (public/work/ciko/). Replace each use with the real artwork.
+const cikoCard: Image = { src: "/work/mockups/ciko-card.png", alt: "Ciko on a phone: the Capymillions gold logo above a capybara in a Seleção-style jersey, gold chain and gold aviators" };
+const cikoOuro: Image = { src: "/work/ciko/ciko-ouro.jpg", alt: "The Ouro medallion: a gold coin pendant with Ciko wearing aviators, framed by laurel leaves, on a gold chain" };
+const cikoHero: Image = { src: "/work/ciko/ciko-hero.png", alt: "Ciko, a capybara in a cream shirt, gold chain and gold aviators", heroScale: 1.0925 };
+const cikoSheet1: Image = { src: "/work/ciko/character-sheet-1.jpg", alt: "Ciko character sheet: front, side and back views and a close-up of the face, jersey and gold chain" };
+const cikoSheet2: Image = { src: "/work/ciko/character-sheet-2.jpg", alt: "Ciko character sheet with the Capymillions gold sign: poses holding the sign, a three-quarter view and back views" };
+const cikoStreet: Image = { src: "/work/ciko/ciko-street.jpg", alt: "Ciko in his Seleção-style jersey and gold chain, standing on a sunlit São Paulo street outside a restaurant terrace" };
 const trunfoOptin2: Image = { src: "/work/mockups/trunfo-optin-2.png", alt: "KTO Trunfo opt-in screen: a pack tearing open over cards, with Opt-in and Later buttons" };
 const trunfoMissedDetail: Image = { src: "/work/mockups/trunfo-missed-detail.png", alt: "KTO Trunfo reward detail for a previous day: 10 free spins, how to claim them and when the pack was opened" };
 const trunfoMissedChance: Image = { src: "/work/mockups/trunfo-missed-chance.png", alt: "KTO Trunfo Draw a card screen for a missed day: a sealed pack and the message You missed your chance" };
@@ -445,7 +468,7 @@ export const caseStudies: CaseStudy[] = [
       {
         ...areaStage(
           "Redesigned Live Lobby",
-          { screen: liveLobbyScreen },
+          { video: { src: "/work/video/sportsbook-live-lobby.mp4", label: "The redesigned KTO live lobby: scrolling the Hot tab and live matches", screen: { top: 2, headerSpace: 6 } } },
           "The Live lobby was redesigned from the ground up, with a new Hot tab surfacing the most popular live events in real time. This brought previously hidden opportunities, such as major Grand Slam matches, to the forefront, making them easier for customers to discover and bet on. The new Pin feature allowed users to follow multiple live bets throughout the lifecycle of an event, giving them a more focused and persistent way to track their bets.",
         ),
         illustration: liveLobbyIllustration,
@@ -565,7 +588,7 @@ export const caseStudies: CaseStudy[] = [
     ...draftContent(),
     description: "An agnostic Jackpot Product designed and built for the Brazilian market on the PrizeFlex APIs.",
     thumbnail: jackpotsHome,
-    heroShots: [jackpotsHome],
+    heroShots: [],
     stages: [
       {
         name: "Discover & Define",
@@ -603,6 +626,81 @@ export const caseStudies: CaseStudy[] = [
     outcomeScreens: [jackpotContribution, jackpotWheel, jackpotSplash],
     learnings: [],
     impact: { lead: "", metrics: [] },
+  },
+  {
+    slug: "ciko-character-development",
+    title: "Character Development",
+    ...kto,
+    company: "Boundless",
+    ...draftContent(),
+    description:
+      "A character built from scratch to front KTO's Capymillions jackpot: a capybara from São Paulo with a backstory, a wardrobe, a voice and his own animations.",
+    years: "2026",
+    introduction: [
+      "We wanted a character who could carry the product across the lobby, the jackpot tiers and every campaign, and who felt unmistakably Brazilian.",
+      "I led the development of Ciko, a capybara from Grajaú who has found his way to the rooftop bars of Itaim Bibi. I shaped his story, look, voice and motion, and the character sheet that keeps everyone using him consistently.",
+    ],
+    impact: { lead: "", metrics: [] },
+    stages: [
+      {
+        name: "Discover & Define",
+        summary: "Discover & Define",
+        body: "",
+        points: [
+          "Build a backstory rooted in São Paulo",
+          "Design a look that signals money and swagger",
+          "Give him a voice and personality",
+          "Bring him to life with motion",
+          "Extend him across the jackpot tiers",
+        ],
+        video: { src: "/work/ciko/ciko-clip2.mp4", label: "Ciko idling in his Seleção jersey and gold chain" },
+        shots: [],
+      },
+      {
+        name: "Build a backstory rooted in São Paulo",
+        summary: "Build a backstory rooted in São Paulo",
+        body: "Ciko is a barrel-chested capybara from Grajaú, in the south of São Paulo, who now drifts between the cafés, rooftop bars and members' clubs of Itaim Bibi.\n\nThat journey from the rougher side of the city to the champagne terraces gave him confidence, hustle and a mystery: nobody knows how he made his fortune, and nobody asks.",
+        image: cikoStreet,
+        imageWidth: 114,
+        shots: [],
+      },
+      {
+        name: "Design a look that signals money and swagger",
+        summary: "Design a look that signals money and swagger",
+        body: "Ciko's wardrobe sits between streetwear and new money: a Seleção-style jersey worn slightly too tight, oversized gold chains, a custom capybara medallion, a gold watch and aviators he never takes off.\n\nA palette inspired by the green and gold of Brazil and a Miami skyline keeps him instantly recognisable, from a full turnaround to a close-up.",
+        image: cikoOuro,
+        imageWidth: 112,
+        shots: [],
+      },
+      {
+        name: "Give him a voice and personality",
+        summary: "Give him a voice and personality",
+        body: "Ciko is impossible to dislike: relaxed, charismatic and always the last to leave. Catchphrases like \"Relax, irmão... it'll work out\" and small quirks, like never taking his sunglasses off, give writers and designers a consistent voice to work from.",
+        video: { src: "/work/ciko/ciko-netflix.mp4", label: "Ciko in a tongue-in-cheek documentary-style clip", fill: true, sound: true },
+        shots: [],
+      },
+      {
+        name: "Bring him to life with motion",
+        summary: "Bring him to life with motion",
+        body: "Short animated loops give Ciko a relaxed, unbothered presence, and logo reveals in landscape and vertical formats introduce the Capymillions jackpot in the lobby and on social.\n\nA tongue-in-cheek documentary-style clip shows how far the character can stretch into humour.",
+        video: { src: "/work/ciko/ciko-clip5.mp4", label: "Ciko striking a pose under a spotlight as gold confetti falls", fill: true },
+        shots: [],
+      },
+      {
+        name: "Extend him across the jackpot tiers",
+        summary: "Extend him across the jackpot tiers",
+        body: "Ciko fronts the Capymillions lockup, and each jackpot tier, Ouro, Prata, Bronze and Metal, gets its own medallion in the matching metal, so a player can read the prize level at a glance.\n\nThe tagline \"O bicho não esfria\" ties it all together.",
+        video: { src: "/work/ciko/ciko-clip4.mp4", label: "Ciko beside a golden slot machine landing on triple sevens", fill: true, offsetY: 120 },
+        shots: [],
+      },
+    ],
+    outcomeScreens: [],
+    sheets: [cikoSheet1, cikoSheet2],
+    learnings: [],
+    linksTitle: "Links",
+    links: [{ label: "Ciko Character Sheet", url: "https://ciko-ten.vercel.app" }],
+    thumbnail: cikoCard,
+    heroShots: [cikoHero],
   },
   {
     slug: "kto-trunfo",
@@ -690,7 +788,7 @@ export const caseStudies: CaseStudy[] = [
     linksTitle: "Links",
     links: [{ label: "Marketing Landing Page", url: "https://trunfo-chi.vercel.app" }],
     thumbnail: trunfoHome,
-    heroShots: [{ ...trunfoHome, cardFlip: true }, trunfoHome],
+    heroShots: [{ ...trunfoHome, cardFlip: true }],
   },
 ];
 

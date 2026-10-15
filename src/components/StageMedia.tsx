@@ -1,5 +1,6 @@
+import { SpeakerHigh, SpeakerSlash } from "@phosphor-icons/react";
 import { motion, useInView, useReducedMotion } from "motion/react";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { Badge, Image, Screen, Stage } from "../content/caseStudies";
 import { LottieIcon } from "./LottieIcon";
 import { easeOut } from "./motion";
@@ -11,6 +12,16 @@ const PANEL = "bg-[#323232]";
 
 /** A stage's picture: phone mockups by default, or a finished image, a badge row or a cropped screen. */
 export function StageMedia({ stage, className, active }: { stage: Stage; className?: string; active?: boolean }) {
+  if (stage.video?.screen) return <ScreenVideoStage src={stage.video.src} label={stage.video.label} screen={stage.video.screen} className={className} />;
+  if (stage.video) return <VideoStage
+        src={stage.video.src}
+        label={stage.video.label}
+        fill={stage.video.fill}
+        offsetY={stage.video.offsetY}
+        sound={stage.video.sound}
+        active={active}
+        className={className}
+      />;
   if (stage.marquee) return <MarqueeStage images={stage.marquee} className={className} />;
   if (stage.cardFlip) return <CardFlipStage active={active} className={className} />;
   if (stage.lottie) return <LottieStage src={stage.lottie.src} label={stage.lottie.label} className={className} />;
@@ -18,6 +29,77 @@ export function StageMedia({ stage, className, active }: { stage: Stage; classNa
   if (stage.badges) return <BadgeStage badges={stage.badges} className={className} />;
   if (stage.screen) return <ScreenStage screen={stage.screen} className={className} />;
   return <PhoneStage shots={stage.shots ?? []} crop={stage.crop} className={className} />;
+}
+
+/**
+ * A short looping video on a black panel, fitted whole or (fill) cropped to cover the panel. It stays paused when
+ * the visitor prefers reduced motion. A clip with sound gets a mute toggle at the bottom right; it always starts
+ * muted and goes quiet again when its stage leaves the screen.
+ */
+function VideoStage({
+  src,
+  label,
+  fill,
+  offsetY,
+  sound,
+  active,
+  className,
+}: {
+  src: string;
+  label: string;
+  fill?: boolean;
+  offsetY?: number;
+  sound?: boolean;
+  active?: boolean;
+  className?: string;
+}) {
+  const reduce = useReducedMotion();
+  const box = useRef<HTMLDivElement>(null);
+  const video = useRef<HTMLVideoElement>(null);
+  const seen = useInView(box, { amount: 0.4 });
+  const onScreen = active ?? seen;
+  const [muted, setMuted] = useState(true);
+
+  useEffect(() => {
+    if (!onScreen) setMuted(true);
+  }, [onScreen]);
+  useEffect(() => {
+    if (video.current) video.current.muted = muted;
+  }, [muted]);
+
+  return (
+    <div ref={box} className={`relative overflow-hidden bg-black ${className ?? ""}`}>
+      <video
+        ref={video}
+        src={src}
+        aria-label={label}
+        autoPlay={!reduce}
+        loop
+        muted
+        playsInline
+        preload="metadata"
+        // With an offset the video runs at the panel's full width and its own height, so the panel crops
+        // its top and bottom, and the offset slides the picture up or down behind that crop.
+        className={
+          offsetY !== undefined
+            ? "absolute left-0 top-1/2 h-auto w-full max-w-none"
+            : `absolute inset-0 h-full w-full ${fill ? "object-cover" : "object-contain"}`
+        }
+        style={offsetY !== undefined ? { transform: `translateY(calc(-50% + ${offsetY}px))` } : undefined}
+      />
+      {sound && (
+        <button
+          type="button"
+          onClick={() => setMuted((m) => !m)}
+          aria-label={muted ? "Turn sound on" : "Turn sound off"}
+          aria-pressed={!muted}
+          className="absolute bottom-3 right-3 z-10 grid size-10 place-items-center rounded-full border border-white/20 bg-black/60 text-white backdrop-blur-sm transition-colors duration-300 hover:bg-black/80 active:scale-[0.96]"
+        >
+          {muted ? <SpeakerSlash className="size-5" weight="regular" /> : <SpeakerHigh className="size-5" weight="regular" />}
+        </button>
+      )}
+    </div>
+  );
 }
 
 /** Cards side by side, drifting from right to left. The row is shown twice so the loop has no seam. */
@@ -153,6 +235,31 @@ function BadgeStage({ badges, className }: { badges: Badge[]; className?: string
           </motion.li>
         ))}
       </ul>
+    </div>
+  );
+}
+
+/** A screen recording shown like ScreenStage shows a screenshot: 56% of the panel wide, rounded at the top, cropped by the panel's bottom edge. */
+function ScreenVideoStage({
+  src,
+  label,
+  screen,
+  className,
+}: {
+  src: string;
+  label: string;
+  screen: { top?: number; headerSpace?: number };
+  className?: string;
+}) {
+  const reduce = useReducedMotion();
+  return (
+    <div className={`relative overflow-hidden ${PANEL} ${className ?? ""}`}>
+      <div className="absolute left-1/2 w-[56%] -translate-x-1/2 [container-type:inline-size]" style={{ top: `${screen.top ?? 10}%` }}>
+        <div className="overflow-hidden bg-black" style={{ borderTopLeftRadius: "12cqw", borderTopRightRadius: "12cqw" }}>
+          {screen.headerSpace ? <div aria-hidden style={{ height: `${screen.headerSpace}cqw` }} /> : null}
+          <video src={src} aria-label={label} autoPlay={!reduce} loop muted playsInline preload="metadata" className="block h-auto w-full" />
+        </div>
+      </div>
     </div>
   );
 }
