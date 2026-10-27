@@ -496,8 +496,8 @@ export const caseStudies: CaseStudy[] = [
     impact: {
       metrics: [
         { value: "+10%", label: "Jump of player engagement with previously difficult-to-find-markets like player props" },
-        { value: "30%", label: "Reduction of time to place a three fold combination bet" },
-        { value: "23.4%", label: "Reduction of time to find and place a live 1x2 bet" },
+        { value: "29.4%", label: "of customers who added a player prop to their betslip placed a matching bet in the same session" },
+        { value: "45s", label: "median time from adding a player prop to placing the bet" },
       ],
       lead: "A significantly improved, fully automated lobby powered by a trends service that increased event relevance, simplified navigation, enriched punters with useful information, and introduced FOMO-driven elements to encourage engagement.",
     },
