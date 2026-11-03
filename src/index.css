@@ -260,3 +260,57 @@ html {
 .card-marquee { display: flex; width: max-content; animation: cardMarquee 36s linear infinite; }
 @keyframes cardMarquee { to { transform: translateX(-50%); } }
 @media (prefers-reduced-motion: reduce) { .card-marquee { animation: none; } }
+
+/* The first paragraph of a writing opens with a large first letter. */
+.writing-opening::first-letter {
+  float: left;
+  margin: 0.06em 0.1em 0 -0.02em;
+  font-size: 4.6em;
+  font-weight: 500;
+  line-height: 0.78;
+  letter-spacing: -0.04em;
+}
+
+/* The text of a Word file, which arrives as plain tags (see vite-writings.ts). */
+.rich {
+  max-width: 62ch;
+  font-size: 1.125rem;
+  line-height: 1.75;
+  color: var(--fg);
+  overflow-wrap: anywhere;
+}
+@media (min-width: 768px) {
+  .rich { font-size: 1.2rem; line-height: 1.8; }
+}
+.rich > * + * { margin-top: 1.5rem; }
+.rich h2 { margin-top: 3.5rem; font-size: 1.75rem; font-weight: 700; line-height: 1.2; letter-spacing: -0.02em; }
+.rich h3 { margin-top: 2.5rem; font-size: calc(1.35rem + 2px); font-weight: 500; line-height: 1.3; letter-spacing: -0.015em; }
+.rich h2 + *, .rich h3 + * { margin-top: 1rem; }
+@media (min-width: 768px) {
+  .rich h2 { font-size: 2rem; }
+}
+.rich strong { font-weight: 700; }
+.rich em { font-style: italic; }
+.rich s { text-decoration: line-through; }
+.rich a { text-decoration: underline; text-decoration-color: var(--line); text-underline-offset: 4px; transition: text-decoration-color 0.2s; }
+.rich a:hover { text-decoration-color: var(--fg); }
+.rich ul, .rich ol { padding-left: 1.5rem; }
+.rich ul { list-style: disc; }
+.rich ol { list-style: decimal; }
+.rich li + li { margin-top: 0.5rem; }
+.rich li::marker { color: var(--soft); }
+.rich blockquote { margin-block: 2.5rem; border-left: 2px solid var(--line); padding-left: 1.5rem; font-size: 1.5rem; font-style: normal; font-weight: 500; line-height: 1.4; letter-spacing: -0.015em; }
+@media (min-width: 768px) {
+  .rich blockquote { padding-left: 2rem; font-size: 2rem; line-height: 1.35; }
+}
+.rich hr { border: 0; border-top: 1px solid var(--line); margin-block: 3rem; }
+.rich table { width: 100%; border-collapse: collapse; font-size: 1rem; }
+.rich th, .rich td { border-bottom: 1px solid var(--line); padding: 0.6rem 0.75rem 0.6rem 0; text-align: left; vertical-align: top; }
+.rich > p:first-child::first-letter {
+  float: left;
+  margin: 0.06em 0.1em 0 -0.02em;
+  font-size: 4.6em;
+  font-weight: 500;
+  line-height: 0.78;
+  letter-spacing: -0.04em;
+}

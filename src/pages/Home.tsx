@@ -14,6 +14,8 @@ import { Link, useLocation } from "react-router";
 import { CaseStudyRail } from "../components/CaseStudyRail";
 import { Contact } from "../components/Contact";
 import { MaskedTitle, Reveal, easeOut } from "../components/motion";
+import { WRITINGS_INTRO, WRITINGS_NAME, writings } from "../content/writings";
+import { WritingRow } from "./Writings";
 import { TrunfoCard } from "../components/TrunfoCard";
 import { caseStudies, thumbnailOf } from "../content/caseStudies";
 
@@ -35,6 +37,7 @@ export function Home() {
         <Work />
         <Approach />
         <Companies />
+        <LatestWritings />
       </main>
       <Contact />
     </>
@@ -181,6 +184,40 @@ function PhoneVideo({ src, poster, hideDot, onEnded }: { src: string; poster: st
       )}
       <img src="/work/mockups/phone-frame.png" alt="" width={936} height={1836} draggable={false} className="pointer-events-none absolute inset-0 block h-full w-full" />
     </div>
+  );
+}
+
+/* ---------------------------------------------------------------- Writings */
+
+/** The latest few writings, between Experience and the footer. Hidden until there is something to read. */
+function LatestWritings() {
+  if (writings.length === 0) return null;
+  const latest = writings.slice(0, 4);
+  return (
+    <section id="writings" aria-labelledby="writings-title" className="mx-auto max-w-[1400px] scroll-mt-16 px-4 pb-16 md:px-8 md:pb-24">
+      <Reveal>
+        <h2 id="writings-title" className="text-4xl font-medium leading-[1.05] tracking-[-0.03em] md:text-6xl">
+          {WRITINGS_NAME}
+        </h2>
+        <p className="mt-5 text-lg text-muted">{WRITINGS_INTRO}</p>
+      </Reveal>
+      <ol className="mt-12 md:mt-16">
+        {latest.map((w, i) => (
+          <li key={w.slug}>
+            <Reveal delay={i * 0.05}>
+              <WritingRow writing={w} />
+            </Reveal>
+          </li>
+        ))}
+      </ol>
+      <Link
+        to="/writings"
+        className="group mt-8 inline-flex items-center gap-3 text-[15px] font-medium"
+      >
+        All {WRITINGS_NAME.toLowerCase()}
+        <ArrowRight className="size-4 transition-transform duration-500 ease-[var(--ease-out)] group-hover:translate-x-1" />
+      </Link>
+    </section>
   );
 }
 

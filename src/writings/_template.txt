@@ -1,0 +1,28 @@
+Title: The title of the piece
+Date: 2026-10-30
+Subject: Career advice
+Place: Sao Paulo
+Summary: Optional. One or two sentences shown in the lists. Leave this line out to use the opening of the text instead.
+Draft: yes
+
+HOW TO ADD A WRITING
+1. Copy this file in the same folder and give the copy a name without spaces, e.g. dear-young-designer.txt.
+   The name becomes the web address: /writings/dear-young-designer. A name starting with an underscore is ignored.
+2. Fill in the lines at the top. Only Title is needed. Subject, Place and Summary are optional.
+   The top block ends at the first empty line. Everything below it is the text.
+3. Delete the "Draft: yes" line to publish. While it is there the piece shows only on your own computer.
+
+Write the text in plain paragraphs, with an empty line between them. A few extras are understood:
+
+## A small heading starts with two hash signs and a space
+
+> A quote starts with a greater-than sign and a space.
+
+- A list is lines that start with a dash and a space.
+- Like this one.
+
+Use **two stars** for bold, *one star* for italic and [text in brackets](https://example.com) followed by the address in round brackets for a link.
+
+---
+
+Three dashes on their own draw a thin line.

@@ -4,12 +4,14 @@ import { Header } from "./components/Header";
 import { Home } from "./pages/Home";
 import { CaseStudySheet } from "./pages/CaseStudy";
 import { NotFound } from "./pages/NotFound";
+import { WritingPage, WritingsIndex } from "./pages/Writings";
 
 export default function App() {
   const { pathname } = useLocation();
   const work = matchPath("/work/:slug", pathname);
   // Home stays mounted under an open case study, so closing it lands exactly where the reader left.
   const showHome = pathname === "/" || !!work;
+  const writing = matchPath("/writings/:slug", pathname);
 
   return (
     <>
@@ -20,7 +22,7 @@ export default function App() {
         Skip to content
       </a>
       <Header />
-      {showHome ? <Home /> : <NotFound />}
+      {showHome ? <Home /> : pathname === "/writings" ? <WritingsIndex /> : writing ? <WritingPage slug={writing.params.slug ?? ""} /> : <NotFound />}
       <AnimatePresence>{work && <CaseStudySheet key="case-study" slug={work.params.slug ?? ""} />}</AnimatePresence>
     </>
   );

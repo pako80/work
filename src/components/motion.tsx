@@ -57,18 +57,21 @@ export function Reveal({
   children,
   className,
   delay = 0,
+  onLoad = false,
 }: {
   children: ReactNode;
   className?: string;
   delay?: number;
+  /** Play on mount instead of waiting to scroll into view (for tall blocks that never reach the threshold). */
+  onLoad?: boolean;
 }) {
   const reduce = useReducedMotion();
+  const shown = { opacity: 1, y: 0, filter: "blur(0px)" };
   return (
     <motion.div
       className={className}
       initial={reduce ? false : { opacity: 0, y: 24, filter: "blur(6px)" }}
-      whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-      viewport={{ once: true, amount: 0.3 }}
+      {...(onLoad ? { animate: shown } : { whileInView: shown, viewport: { once: true, amount: 0.3 } })}
       transition={{ duration: 0.9, ease: easeOut, delay }}
     >
       {children}
